@@ -29,7 +29,7 @@ app.run(function($rootScope, $location) {
 	$rootScope.$location = $location;
 })
 
-app.controller('RoomsCtrl', function($scope, $http) {
+app.controller('RoomsCtrl', function($scope, $rootScope, $http) {
 	$scope.equipements = [];
 	$scope.capacities = [];
 	
@@ -38,8 +38,13 @@ app.controller('RoomsCtrl', function($scope, $http) {
     $scope.end = null;
 
     $scope.reset = function() {
+    	$scope.startDate = new Date()
     	$scope.start = null;
     	$scope.end = null;
+
+    	$rootScope.startDate = null;
+		$rootScope.start = null;
+		$rootScope.end = null;
 
     	$http({
 		  method: 'GET',
@@ -118,6 +123,10 @@ app.controller('RoomsCtrl', function($scope, $http) {
 				$scope.rooms = response.data;
 				$scope.equipements = [];
 	    		$scope.capacities = [];
+
+	    		$rootScope.startDate = $scope.startDate;
+			    $rootScope.start = $scope.start;
+			    $rootScope.end = $scope.end;
 
 			    $scope.rooms.forEach(function(room) {
 			    	var finded = false;
@@ -208,7 +217,7 @@ app.controller('RoomsCtrl', function($scope, $http) {
 	};
 });
 
-app.controller('RoomCtrl', function($scope, $routeParams, $http) {
+app.controller('RoomCtrl', function($scope, $rootScope, $routeParams, $http) {
 	var roomId = $routeParams.roomId;
 
 	$scope.uiConfig = {
@@ -229,9 +238,17 @@ app.controller('RoomCtrl', function($scope, $routeParams, $http) {
 
     $scope.eventSources = [];
 
-    $scope.startDate = new Date();
-    $scope.start = null;
-    $scope.end = null;
+    if ($rootScope.startDate && $rootScope.startDate !== null) {
+    	$rootScope.startDate = $rootScope.startDate;
+    	$rootScope.start = $rootScope.start;
+    	$rootScope.end = $rootScope.end;
+    } else {
+    	$scope.startDate = new Date();
+    	$scope.start = null;
+    	$scope.end = null;
+    }
+
+    console.log($rootScope);
 
 	$http({
 	  method: 'GET',
