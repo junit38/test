@@ -32,10 +32,6 @@ app.run(function($rootScope, $location) {
 app.controller('RoomsCtrl', function($scope, $rootScope, $http) {
 	$scope.equipements = [];
 	$scope.capacities = [];
-	
-	$scope.startDate = new Date();
-    $scope.start = null;
-    $scope.end = null;
 
     $scope.reset = function() {
     	$scope.startDate = new Date()
@@ -91,8 +87,6 @@ app.controller('RoomsCtrl', function($scope, $rootScope, $http) {
 		    console.log(response);
 		});
     }
-
-    $scope.reset();
 
 	$scope.searchForRooms = function() {
 		if (!$scope.start || !$scope.end) {
@@ -166,6 +160,22 @@ app.controller('RoomsCtrl', function($scope, $rootScope, $http) {
 		    console.log(response);
 		});
 	}
+
+	if ($rootScope.startDate && $rootScope.startDate !== null) {
+    	$scope.startDate = $rootScope.startDate;
+    	$scope.start = $rootScope.start;
+    	$scope.end = $rootScope.end;
+    } else {
+    	$scope.startDate = new Date();
+    	$scope.start = new Date();
+    	$scope.end = new Date();
+    }
+
+    if ($rootScope.start && $rootScope.start !== null) {
+    	$scope.searchForRooms();
+    } else {
+    	$scope.reset();
+    }
 
 	$scope.toggleFilter = function(filter) {
 		filter.selected = !filter.selected;
@@ -298,11 +308,17 @@ app.controller('RoomCtrl', function($scope, $rootScope, $routeParams, $http) {
 	    	} else {
 	    		$scope.start = null;
 				$scope.end = null;
+
+				$rootScope.startDate = new Date();
+		    	$rootScope.start = null;
+		    	$rootScope.end = null;
+
 				if ($scope.eventSources[0].length === 0) {
 					$scope.eventSources[0] = [response.data.reservation]
 				} else {
 					$scope.eventSources[0].push(response.data.reservation)
 				}
+				alert('Room successfully booked.');
 	    	}
 		}, function errorCallback(response) {
 			console.log(response);

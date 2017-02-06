@@ -37,8 +37,6 @@ router.post('/', function(req, res, next) {
   		end: new Date(req.body.end),
   	});
 
-  	console.log(reservation);
-
   	if (!reservation.room) {
 		return res.json({
   			err: 'You must enter a room Id.'
@@ -58,11 +56,11 @@ router.post('/', function(req, res, next) {
 			  		})
 				} else if (reservation.end < reservation.start) {
 			  		return res.json({
-			  			err: 'The end date must be after the start time.'
+			  			err: 'The end time must be after the start time.'
 			  		})
 			  	} else if (!(reservation.start - reservation.end)) {
 			  		return res.json({
-			  			err: 'You must book a room for amount of time.'
+			  			err: 'You must book a room for an amount of time.'
 			  		})
 			  	} else if (reservation.start < currentDate) {
 			  		return res.json({
@@ -85,7 +83,6 @@ router.post('/', function(req, res, next) {
 			  			if (err) {
 			  				return res.json(err)
 			  			} else if (reservations && reservations.length) {
-			  				console.log(reservations);
 			  				return res.json({
 			  					err: 'A reservation has already been made for this datetime.'
 			  				})

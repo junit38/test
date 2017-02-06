@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var Room = require('../models/room');
 var Reservation = require('../models/reservation');
+var Room = require('../models/room');
 
 router.get('/', function(req, res, next) {
 	Room.find({}, function(err, rooms) {
@@ -47,11 +47,11 @@ router.post('/search', function(req, res, next) {
 		  		})
 			} else if (end < start) {
 		  		return res.json({
-		  			err: 'The end date must be after the start time.'
+		  			err: 'The end time must be after the start time.'
 		  		})
 		  	} else if (!(start - end)) {
 		  		return res.json({
-		  			err: 'You must book a room for amount of time.'
+		  			err: 'You must book a room for an amount of time.'
 		  		})
 		  	} else if (start < currentDate) {
 		  		return res.json({
@@ -87,5 +87,6 @@ router.post('/search', function(req, res, next) {
   		}
   	})
 });
+
 
 module.exports = router;
