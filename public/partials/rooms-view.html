@@ -1,10 +1,11 @@
 <section>
     <h2></h2>
-	<div class="list-group">
+	  <div class="list-group">
         <a href="#!/rooms/{{ room._id }}" class="list-group-item">
           <h4 class="list-group-item-heading">{{ room.name }}</h4>
           <p class="list-group-item-text">{{ room.description }}</p>
-           <span class="label label-success"><span class="glyphicon glyphicon-user"></span> {{ room.capacity }}</span>
+          <span class="label label-success"><span class="glyphicon glyphicon-user"></span> {{ room.capacity }}</span>
+
           <span class="label label-primary" ng-repeat="equipement in room.equipements" style="margin-right: 5px">{{ equipement.name}}</span>
         </a>
       </div>

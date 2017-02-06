@@ -1,11 +1,40 @@
 <section>
-  <h2>Rooms</h2>
-  <div class="list-group">
-    <a href="#!/rooms/{{ room._id }}" class="list-group-item" ng-repeat="room in rooms">
-      <h4 class="list-group-item-heading">{{ room.name }}</h4>
-      <p class="list-group-item-text">{{ room.description }}</p>
-       <span class="label label-success"><span class="glyphicon glyphicon-user"></span> {{ room.capacity }}</span>
-      <span class="label label-primary" ng-repeat="equipement in room.equipements" style="margin-right: 5px">{{ equipement.name}}</span>
-    </a>
-  </div>
+  	<h2>Rooms</h2>
+  	<form class="form-inline" ng-submit="searchForRooms()">
+	    <div class="form-group">
+	        <input class="form-control" type="date" ng-model="startDate" required>
+	    </div>
+	    <div class="form-group">
+	        <input class="form-control" type="time" ng-model="start" required>
+	    </div>
+	    <div class="form-group">
+	        <input class="form-control" type="time" ng-model="end" required>
+	    </div>
+	    <div class="form-group">
+	        <input class="btn btn-primary" type="submit" value="Submit">
+	    </div>
+	    <div class="form-group">
+	    	<button class="btn btn-default" ng-click="reset()">Reset</button>
+	    </div>
+	</form>
+	<div style="margin-top: 10px;">
+		<span class="label" ng-class="{
+			'label-default': !equipement.selected,
+			'label-primary': equipement.selected
+		}" ng-repeat="equipement in equipements" ng-click="toggleFilter(equipement)" style="margin-right: 5px; cursor: pointer; padding: 5px;">{{ equipement.name }}</span>
+	</div>
+	<div style="margin-top: 5px; margin-bottom: 10px;">
+		<span class="label label-default" ng-class="{
+			'label-default': !capacity.selected,
+			'label-success': capacity.selected
+		}" ng-repeat="capacity in capacities" ng-click="toggleFilter(capacity)" style="margin-right: 5px; cursor: pointer; padding: 5px;">{{ capacity.value }}</span>
+	</div>
+	<div class="list-group">
+	    <a href="#!/rooms/{{ room._id }}" class="list-group-item" ng-repeat="room in rooms | filter:performSearch">
+	      <h4 class="list-group-item-heading">{{ room.name }}</h4>
+	      <p class="list-group-item-text">{{ room.description }}</p>
+	       <span class="label label-success"><span class="glyphicon glyphicon-user"></span> {{ room.capacity }}</span>
+	      <span class="label label-primary" ng-repeat="equipement in room.equipements" style="margin-right: 5px">{{ equipement.name}}</span>
+	    </a>
+	</div>
 </section>

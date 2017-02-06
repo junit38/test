@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var Room = require('../models/room');
+var Reservation = require('../models/reservation');
 
 router.get('/', function(req, res, next) {
 	Room.find({}, function(err, rooms) {
@@ -29,6 +30,8 @@ router.post('/search', function(req, res, next) {
 	var reservation = req.body;
 
 	var currentDate = new Date();
+	var start = new Date(req.body.start);
+	var end = new Date(req.body.end);
 
 	Room.find({}, function(err, rooms) {
   		if (err) {
@@ -38,51 +41,48 @@ router.post('/search', function(req, res, next) {
   				err: 'No rooms.'
   			})
   		} else {
-  			if (!res.body.start || !req.body.end) {
+  			if (!start || !end) {
 				return res.json({
 		  			err: 'You must enter a valid start and end datetime.'
 		  		})
-			} else if (reservation.end < reservation.start) {
+			} else if (end < start) {
 		  		return res.json({
 		  			err: 'The end date must be after the start time.'
 		  		})
-		  	} else if (!(reservation.start - reservation.end)) {
+		  	} else if (!(start - end)) {
 		  		return res.json({
 		  			err: 'You must book a room for amount of time.'
 		  		})
-		  	} else if (reservation.start < currentDate) {
+		  	} else if (start < currentDate) {
 		  		return res.json({
 		  			err: 'You can\'t book a room for earlier date.'
 		  		})
 		  	} else {
-		  		Reservation.find({
-		  			room: reservation.room,
-	  				$or: [
-	  					{ start: { $gte: reservation.start }, end: { $lte: reservation.end } },
-	  					{ start: { $lte: reservation.start }, end: { $gte: reservation.end } },
-	  					{ start: { $gte: reservation.start, $lte: reservation.end }, end: { $gte: reservation.end } },
-	  					{ start: { $lte: reservation.start }, end: { $lte: reservation.end, $gte: reservation.start } },
-	  				]
-		  		}, function(err, reservations) {
-		  			if (err) {
-		  				return res.json(err)
-		  			} else if (reservations && reservations.length) {
-		  				return res.json({
-		  					err: 'A reservation has already been made for this datetime.'
-		  				})
-		  			} else {
-		  				reservation.save(function(err) {
-						  	if (err) {
-						  		res.json(err);
-						  	} else {
-						  		res.json({
-						  			message: 'Reservation booked succesfully.',
-						  			reservation: reservation
-						  		});
-						  	}
-						})
-		  			}
-		  		})
+				var promises = [];
+				var filteredRooms = [];                                                                                                  
+
+		  		rooms.forEach(function(room) {
+		  			promises.push(Reservation.find({
+			  			room: room._id,
+		  				$or: [
+		  					{ start: { $gte: start }, end: { $lte: end } },
+		  					{ start: { $lte: start }, end: { $gte: end } },
+		  					{ start: { $gte: start, $lte: end }, end: { $gte: end } },
+		  					{ start: { $lte: start }, end: { $lte: end, $gte: start } },
+		  				]
+			  		}, function(err, reservations) {
+			  			if (err) {
+			  				return res.json(err)
+			  			} else if (reservations && reservations.length === 0) {
+			  				filteredRooms.push(room)
+			  			}
+			  		}))
+		  		});
+
+		  		Promise.all(promises)
+		  			.then(function() {
+		  				res.json(filteredRooms)
+		  			})
 		  	}
   		}
   	})
