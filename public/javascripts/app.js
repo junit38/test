@@ -5,8 +5,6 @@ var app = angular.module('app', [
 		'ngCookies',
 		'ngResource',
 		'ui.calendar',
-		'ngMaterial',
-		'mdDatetime'
 	]);
 
 app.config(['$routeProvider', function($routeProvider) {
@@ -128,8 +126,8 @@ app.controller('RoomCtrl', function($scope, $routeParams, $http) {
     $scope.eventSources = [];
 
     $scope.startDate = new Date();
-    $scope.start = new Date();
-    $scope.end = new Date();
+    $scope.start = null;
+    $scope.end = null;
 
 	$http({
 	  method: 'GET',
@@ -158,10 +156,12 @@ app.controller('RoomCtrl', function($scope, $routeParams, $http) {
 		var start = new Date($scope.startDate);
 		start.setHours($scope.start.getHours());
 		start.setMinutes($scope.start.getMinutes());
+		start.setSeconds(0);
 		
 		var end = new Date($scope.startDate);
 		end.setHours($scope.end.getHours());
 		end.setMinutes($scope.end.getMinutes());
+		end.setSeconds(0);
 
 		$http({
 		  method: 'POST',
@@ -172,24 +172,19 @@ app.controller('RoomCtrl', function($scope, $routeParams, $http) {
 		  	end: end
 		  }
 		}).then(function successCallback(response) {
-		    if (response.data.err) {
-		    	alert(response.data.err);
-		    } else {
-		    	$scope.start = new Date();
-    			$scope.end = new Date();
-    			if ($scope.eventSources[0].length === 0) {
-    				$scope.eventSources[0] = [response.data.reservation]
-    			} else {
-    				$scope.eventSources[0].push(response.data.reservation)
-    			}
-		    }
+	    	if (response.data.err) {
+	    		alert(response.data.err);
+	    	} else {
+	    		$scope.start = null;
+				$scope.end = null;
+				if ($scope.eventSources[0].length === 0) {
+					$scope.eventSources[0] = [response.data.reservation]
+				} else {
+					$scope.eventSources[0].push(response.data.reservation)
+				}
+	    	}
 		}, function errorCallback(response) {
-		    console.log(response);
+			console.log(response);
 		});
 	}
-
-	$scope.handleChange = function(which) {
-        $scope.start = new Date($scope.start)
-        $scope.end = new Date($scope.end)
-    };
 });

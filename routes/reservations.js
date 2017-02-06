@@ -69,13 +69,17 @@ router.post('/', function(req, res, next) {
 			  			err: 'You can\'t book a room for earlier date.'
 			  		})
 			  	} else {
+			  		// avoid errors
+			  		reservation.start.setSeconds(0);
+			  		reservation.end.setSeconds(0);
+
 			  		Reservation.find({
 			  			room: reservation.room,
 		  				$or: [
 		  					{ start: { $gte: reservation.start }, end: { $lte: reservation.end } },
 		  					{ start: { $lte: reservation.start }, end: { $gte: reservation.end } },
-		  					{ start: { $gte: reservation.start, $lte: reservation.end }, end: { $gte: reservation.end } },
-		  					{ start: { $lte: reservation.start }, end: { $lte: reservation.end, $gte: reservation.start } },
+		  					{ start: { $gte: reservation.start, $lt: reservation.end }, end: { $gte: reservation.end } },
+		  					{ start: { $lte: reservation.start }, end: { $lte: reservation.end, $gt: reservation.start } },
 		  				]
 			  		}, function(err, reservations) {
 			  			if (err) {
