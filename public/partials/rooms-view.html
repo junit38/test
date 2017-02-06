@@ -1,0 +1,38 @@
+<section layout="column" layout-align="center center">
+	<md-card>
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">{{ room.name }}</span>
+          </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+        	<p>{{ room.description }}</p>
+        	<span>
+        		<md-icon md-font-set="material-icons">perm_identity</md-icon>
+	        	{{ room.capacity }}
+	        </span>
+	        <br ng-if="room.equipements.length">
+	        <md-icon md-font-set="material-icons" ng-if="room.equipements.length">settings</md-icon>
+		    <span ng-repeat="equipement in room.equipements" style="margin-right: 5px">{{ equipement.name }}</span>
+        </md-card-content>
+      </md-card>
+    <div layout-padding ui-calendar="uiConfig.calendar" ng-model="eventSources"></div>
+    <h2>Make a reservation</h2>
+    <form layout-padding layout="row" ng-submit="sendReservation()">
+    	<md-input-container>
+            <label>Enter date</label>
+            <md-datepicker ng-model="startDate"></md-datepicker>
+        </md-input-container>
+
+        <div class="datetime-picker">
+        	<md-datetime ng-model="start" ng-change="handleChange('start')" no-reset></md-datetime>
+        </div>
+
+        <div class="datetime-picker">
+        	<md-datetime ng-model="end" ng-change="handleChange('end')" no-reset></md-datetime>
+        </div>
+        <div>
+        	<md-button type="submit">Submit</md-button>
+        </div>
+    </form>
+</section>

@@ -1,0 +1,33 @@
+  <section layout="column" layout-align="center center">
+  	<h1>Rooms</h1>
+  	<md-card ng-repeat="room in rooms">
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">{{ room.name }}</span>
+          </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+        	<p>{{ room.description }}</p>
+        	<span>{{ room.capacity }}</span>
+		    <span ng-repeat="equipement in room.equipements" style="margin-right: 5px">{{ equipement.name }}</span>
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button href="#!/rooms/{{ room._id }}">Book</md-button>
+        </md-card-actions>
+      </md-card>
+  </section>
+<!-- <section>
+	<h2>Rooms</h2>
+	<form>
+		<input type="text" class="form-control" ng-model="search.$">
+	</form>
+	<span class="label" ng-class="{}" ng-repeat="equipement in equipements" style="margin-right: 5px" ng-click="selectEquipement(equipement)">{{ equipement.name }}</span>
+	<div class="list-group">
+		<a href="#!/rooms/{{ room._id }}" class="list-group-item" ng-repeat="room in rooms | filter:search" ng-click="selectRoom(room)" ng-class="{'active': selectedRoom === room}">
+		    <h4 class="list-group-item-heading">{{ room.name }}</h4>
+		    <p class="list-group-item-text">{{ room.description }}</p>
+		    <span><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ room.capacity }}</span>
+		    <span class="label label-primary" ng-repeat="equipement in room.equipements" style="margin-right: 5px">{{ equipement.name }}</span>
+		</a>
+	</div> -->
+</section>
